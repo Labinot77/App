@@ -199,7 +199,8 @@ function CalendarDayButton({
       ref={ref}
       variant="ghost"
       size="icon"
-      data-day={day.date.toLocaleDateString(locale?.code)}
+      // Fix: use a fixed locale string "en-US" so SSR and client produce identical output
+      data-day={day.date.toLocaleDateString("en-US")}
       data-selected-single={
         modifiers.selected &&
         !modifiers.range_start &&

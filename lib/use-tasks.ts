@@ -13,23 +13,18 @@ export function useTasks() {
     if (!days[date]) {
       setDays({
         ...days,
-        [date]: {
-          date,
-          tasks: [],
-          journal: "",
-        },
+        [date]: { date, tasks: [], journal: "" },
       })
     }
   }
 
   function addTask(date: string, task: Task) {
     createDay(date)
-
     setDays((prev) => ({
       ...prev,
       [date]: {
         ...prev[date],
-        tasks: [...prev[date].tasks, task],
+        tasks: [...(prev[date]?.tasks ?? []), task],
       },
     }))
   }
@@ -46,22 +41,23 @@ export function useTasks() {
     }))
   }
 
-  function updateJournal(date: string, journal: string) {
-    createDay(date)
-
+  function deleteTask(date: string, taskId: string) {
     setDays((prev) => ({
       ...prev,
       [date]: {
         ...prev[date],
-        journal,
+        tasks: prev[date].tasks.filter((task) => task.id !== taskId),
       },
     }))
   }
 
-  return {
-    days,
-    addTask,
-    updateTask,
-    updateJournal,
+  function updateJournal(date: string, journal: string) {
+    createDay(date)
+    setDays((prev) => ({
+      ...prev,
+      [date]: { ...prev[date], journal },
+    }))
   }
+
+  return { days, addTask, updateTask, deleteTask, updateJournal }
 }

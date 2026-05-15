@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { motion } from "motion/react"
 import { CalendarView } from "./components/dashboard/calendar-view"
 import { DayView } from "./components/dashboard/day-view"
 import { useTasks } from "../lib/use-tasks"
@@ -9,12 +10,9 @@ import { Task } from "@/lib/types"
 
 export default function HomePage() {
   const [selectedDate, setSelectedDate] = useState(new Date())
-
-  const { days, addTask, updateTask, updateJournal } =
-    useTasks()
+  const { days, addTask, updateTask, deleteTask, updateJournal } = useTasks()
 
   const formattedDate = formatDate(selectedDate)
-
   const currentDay = days[formattedDate]
 
   function handleAddTask(title: string, description: string) {
@@ -26,30 +24,39 @@ export default function HomePage() {
       reflection: "",
       createdAt: new Date().toISOString(),
     }
-
     addTask(formattedDate, task)
   }
 
   return (
-    <main className="min-h-screen bg-zinc-100">
-      <div className="max-w-7xl mx-auto p-8 grid grid-cols-1 lg:grid-cols-[350px_1fr] gap-8">
-        <CalendarView
-          selected={selectedDate}
-          onSelect={setSelectedDate}
-        />
+    <div className="h-screen flex flex-col overflow-hidden bg-background">
+     
+      <div className="flex-1 overflow-hidden">
+        <div className="h-full max-w-6xl mx-auto px-6 py-14 grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-8">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.45, ease: "easeOut", delay: 0.1 }}
+          >
+            <CalendarView selected={selectedDate} onSelect={setSelectedDate} />
+          </motion.div>
 
-        <DayView
-          tasks={currentDay?.tasks || []}
-          journal={currentDay?.journal || ""}
-          onAddTask={handleAddTask}
-          onUpdateTask={(task) =>
-            updateTask(formattedDate, task)
-          }
-          onJournalChange={(journal) =>
-            updateJournal(formattedDate, journal)
-          }
-        />
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.45, ease: "easeOut", delay: 0.15 }}
+            className="min-h-0"
+          >
+            <DayView
+              tasks={currentDay?.tasks || []}
+              journal={currentDay?.journal || ""}
+              onAddTask={handleAddTask}
+              onUpdateTask={(task) => updateTask(formattedDate, task)}
+              onDeleteTask={(id) => deleteTask(formattedDate, id)}
+              onJournalChange={(journal) => updateJournal(formattedDate, journal)}
+            />
+          </motion.div>
+        </div>
       </div>
-    </main>
+    </div>
   )
 }

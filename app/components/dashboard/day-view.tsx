@@ -1,49 +1,156 @@
-"use client"
+"use client";
 
-import { Task } from "@/lib/types"
-import { TaskCard } from "./task-card"
-import { TaskModal } from "./task-modal"
-import { JournalSection } from "./journal-section"
+import { useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import { Task } from "@/lib/types";
+import { TaskCard } from "./task-card";
+import { JournalSection } from "./journal-section";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { PlusIcon } from "lucide-react";
 
 type Props = {
-  tasks: Task[]
-  journal: string
-  onAddTask: (title: string, description: string) => void
-  onUpdateTask: (task: Task) => void
-  onJournalChange: (journal: string) => void
-}
+  tasks: Task[];
+  journal: string;
+  onAddTask: (title: string, description: string) => void;
+  onUpdateTask: (task: Task) => void;
+  onDeleteTask: (id: string) => void;
+  onJournalChange: (journal: string) => void;
+};
 
 export function DayView({
   tasks,
   journal,
   onAddTask,
   onUpdateTask,
+  onDeleteTask,
   onJournalChange,
 }: Props) {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+
+  function handleAdd() {
+    if (!title.trim()) return;
+    onAddTask(title.trim(), description.trim());
+    setTitle("");
+    setDescription("");
+  }
+
+  const completed = tasks.filter((t) => t.completed).length;
+
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">
-          Daily Planner
-        </h1>
+    <div className="flex flex-col h-[calc(100vh-65px)]">
+      <motion.div
+        initial={{ opacity: 0, y: -8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, ease: "easeOut", delay: 0.2 }}
+        className="pb-5 mb-6 shrink-0 border-b border-border"
+      >
+        <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-1">
+          {new Date().toLocaleDateString("en-US", {
+            weekday: "long",
+            month: "long",
+            day: "numeric",
+          })}
+        </p>
+        <AnimatePresence>
+          {tasks.length > 0 && (
+            <motion.p
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="mt-1 text-sm text-muted-foreground"
+            >
+              <span className="font-bold">Tasks:</span> {completed} of{" "}
+              {tasks.length} done
+            </motion.p>
+          )}
+        </AnimatePresence>
+      </motion.div>
 
-        <TaskModal onCreate={onAddTask} />
+      {/* Two-column body */}
+      <div className="grid grid-cols-1 md:grid-cols-[1fr_320px] gap-6 min-h-0 flex-1">
+        {/* Left — add form + journal */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: "easeOut", delay: 0.25 }}
+          className="flex flex-col gap-5 overflow-hidden"
+        >
+          {/* Add task form */}
+          <div className="shrink-0 rounded-2xl bg-card border border-border p-4 space-y-3 shadow-sm">
+            <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+              New Task
+            </p>
+            <Input
+              placeholder="Task title…"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && handleAdd()}
+              className="bg-background/60 h-9"
+            />
+            <Textarea
+              placeholder="Description (optional)…"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="bg-background/60 min-h-[64px] resize-none text-sm"
+            />
+            <Button
+              onClick={handleAdd}
+              disabled={!title.trim()}
+              className="w-full h-9 text-sm font-semibold disabled:opacity-40"
+            >
+              <PlusIcon className="size-4 mr-1.5" />
+              Add Task
+            </Button>
+          </div>
+
+          {/* Journal */}
+          <div className="flex-1 min-h-0 flex flex-col">
+            <JournalSection value={journal} onChange={onJournalChange} />
+          </div>
+        </motion.div>
+
+        {/* Right — scrollable task list */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: "easeOut", delay: 0.3 }}
+          className="flex flex-col min-h-0"
+        >
+          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3 shrink-0">
+            {tasks.length === 0
+              ? "No tasks yet"
+              : `Tasks · ${completed}/${tasks.length}`}
+          </p>
+
+          <div className="flex-1 overflow-y-auto space-y-3 pr-1">
+            <AnimatePresence initial={false}>
+              {tasks.length === 0 ? (
+                <motion.div
+                  key="empty"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="rounded-2xl border-2 border-dashed border-border py-12 text-center text-sm text-muted-foreground"
+                >
+                  Add your first task →
+                </motion.div>
+              ) : (
+                tasks.map((task) => (
+                  <TaskCard
+                    key={task.id}
+                    task={task}
+                    onUpdate={onUpdateTask}
+                    onDelete={() => onDeleteTask(task.id)}
+                  />
+                ))
+              )}
+            </AnimatePresence>
+          </div>
+        </motion.div>
       </div>
-
-      <div className="space-y-4">
-        {tasks.map((task) => (
-          <TaskCard
-            key={task.id}
-            task={task}
-            onUpdate={onUpdateTask}
-          />
-        ))}
-      </div>
-
-      <JournalSection
-        value={journal}
-        onChange={onJournalChange}
-      />
     </div>
-  )
+  );
 }
