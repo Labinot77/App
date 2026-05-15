@@ -6,16 +6,12 @@ import { Input } from "@/components/ui/input"
 
 type Props = {
   rating: number
-  improvementNotes: string
   onRatingChange: (rating: number) => void
-  onImprovementNotesChange: (notes: string) => void
 }
 
 export function DayRatingSection({
   rating,
-  improvementNotes,
   onRatingChange,
-  onImprovementNotesChange,
 }: Props) {
   return (
     <motion.div
@@ -49,17 +45,6 @@ export function DayRatingSection({
         </div>
       </div>
 
-      <div>
-        <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-2">
-          What could be better?
-        </p>
-        <Input
-          placeholder="Type something you wish you did better or didn't do today…"
-          value={improvementNotes}
-          onChange={(e) => onImprovementNotesChange(e.target.value)}
-          className="bg-background/60 h-9 text-sm"
-        />
-      </div>
     </motion.div>
   )
 }

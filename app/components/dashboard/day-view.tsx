@@ -15,26 +15,22 @@ type Props = {
   tasks: Task[];
   journal: string;
   dayRating: number;
-  improvementNotes: string;
   onAddTask: (title: string, description: string) => void;
   onUpdateTask: (task: Task) => void;
   onDeleteTask: (id: string) => void;
   onJournalChange: (journal: string) => void;
   onRatingChange: (rating: number) => void;
-  onImprovementNotesChange: (notes: string) => void;
 };
 
 export function DayView({
   tasks,
   journal,
   dayRating,
-  improvementNotes,
   onAddTask,
   onUpdateTask,
   onDeleteTask,
   onJournalChange,
   onRatingChange,
-  onImprovementNotesChange,
 }: Props) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -131,9 +127,7 @@ export function DayView({
           {/* Day Rating Section */}
           <DayRatingSection
             rating={dayRating}
-            improvementNotes={improvementNotes}
             onRatingChange={onRatingChange}
-            onImprovementNotesChange={onImprovementNotesChange}
           />
 
           {/* Tasks */}

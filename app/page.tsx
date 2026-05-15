@@ -17,7 +17,6 @@ export default function HomePage() {
     deleteTask,
     updateJournal,
     updateDayRating,
-    updateImprovementNotes,
   } = useTasks()
 
   const formattedDate = formatDate(selectedDate)
@@ -58,15 +57,11 @@ export default function HomePage() {
               tasks={currentDay?.tasks || []}
               journal={currentDay?.journal || ""}
               dayRating={currentDay?.dayRating || 0}
-              improvementNotes={currentDay?.improvementNotes || ""}
               onAddTask={handleAddTask}
               onUpdateTask={(task) => updateTask(formattedDate, task)}
               onDeleteTask={(id) => deleteTask(formattedDate, id)}
               onJournalChange={(journal) => updateJournal(formattedDate, journal)}
               onRatingChange={(rating) => updateDayRating(formattedDate, rating)}
-              onImprovementNotesChange={(notes) =>
-                updateImprovementNotes(formattedDate, notes)
-              }
             />
           </motion.div>
         </div>
