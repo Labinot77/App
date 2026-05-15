@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { Task } from "@/lib/types";
 import { TaskCard } from "./task-card";
 import { JournalSection } from "./journal-section";
+import { DayRatingSection } from "./day-rating-section";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -13,19 +14,27 @@ import { PlusIcon } from "lucide-react";
 type Props = {
   tasks: Task[];
   journal: string;
+  dayRating: number;
+  improvementNotes: string;
   onAddTask: (title: string, description: string) => void;
   onUpdateTask: (task: Task) => void;
   onDeleteTask: (id: string) => void;
   onJournalChange: (journal: string) => void;
+  onRatingChange: (rating: number) => void;
+  onImprovementNotesChange: (notes: string) => void;
 };
 
 export function DayView({
   tasks,
   journal,
+  dayRating,
+  improvementNotes,
   onAddTask,
   onUpdateTask,
   onDeleteTask,
   onJournalChange,
+  onRatingChange,
+  onImprovementNotesChange,
 }: Props) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -70,7 +79,7 @@ export function DayView({
       </motion.div>
 
       {/* Two-column body */}
-      <div className="grid grid-cols-1 md:grid-cols-[1fr_320px] gap-6 min-h-0 flex-1">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6 min-h-0 flex-1">
         {/* Left — add form + journal */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
@@ -112,42 +121,53 @@ export function DayView({
           </div>
         </motion.div>
 
-        {/* Right — scrollable task list */}
+        {/* Right — rating + tasks */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, ease: "easeOut", delay: 0.3 }}
-          className="flex flex-col min-h-0"
+          className="flex flex-col gap-5 min-h-0 overflow-y-auto"
         >
-          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3 shrink-0">
-            {tasks.length === 0
-              ? "No tasks yet"
-              : `Tasks · ${completed}/${tasks.length}`}
-          </p>
+          {/* Day Rating Section */}
+          <DayRatingSection
+            rating={dayRating}
+            improvementNotes={improvementNotes}
+            onRatingChange={onRatingChange}
+            onImprovementNotesChange={onImprovementNotesChange}
+          />
 
-          <div className="flex-1 overflow-y-auto space-y-3 pr-1">
-            <AnimatePresence initial={false}>
-              {tasks.length === 0 ? (
-                <motion.div
-                  key="empty"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="rounded-2xl border-2 border-dashed border-border py-12 text-center text-sm text-muted-foreground"
-                >
-                  Add your first task →
-                </motion.div>
-              ) : (
-                tasks.map((task) => (
-                  <TaskCard
-                    key={task.id}
-                    task={task}
-                    onUpdate={onUpdateTask}
-                    onDelete={() => onDeleteTask(task.id)}
-                  />
-                ))
-              )}
-            </AnimatePresence>
+          {/* Tasks */}
+          <div className="flex-1 min-h-0 flex flex-col">
+            <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3 shrink-0">
+              {tasks.length === 0
+                ? "No tasks yet"
+                : `Tasks · ${completed}/${tasks.length}`}
+            </p>
+
+            <div className="flex-1 overflow-y-auto space-y-3 pr-1">
+              <AnimatePresence initial={false}>
+                {tasks.length === 0 ? (
+                  <motion.div
+                    key="empty"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="rounded-2xl border-2 border-dashed border-border py-12 text-center text-sm text-muted-foreground"
+                  >
+                    Add your first task →
+                  </motion.div>
+                ) : (
+                  tasks.map((task) => (
+                    <TaskCard
+                      key={task.id}
+                      task={task}
+                      onUpdate={onUpdateTask}
+                      onDelete={() => onDeleteTask(task.id)}
+                    />
+                  ))
+                )}
+              </AnimatePresence>
+            </div>
           </div>
         </motion.div>
       </div>

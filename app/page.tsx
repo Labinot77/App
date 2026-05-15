@@ -10,7 +10,15 @@ import { Task } from "@/lib/types"
 
 export default function HomePage() {
   const [selectedDate, setSelectedDate] = useState(new Date())
-  const { days, addTask, updateTask, deleteTask, updateJournal } = useTasks()
+  const {
+    days,
+    addTask,
+    updateTask,
+    deleteTask,
+    updateJournal,
+    updateDayRating,
+    updateImprovementNotes,
+  } = useTasks()
 
   const formattedDate = formatDate(selectedDate)
   const currentDay = days[formattedDate]
@@ -31,7 +39,7 @@ export default function HomePage() {
     <div className="h-screen flex flex-col overflow-hidden bg-background">
      
       <div className="flex-1 overflow-hidden">
-        <div className="h-full max-w-6xl mx-auto px-6 py-14 grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-8">
+        <div className="h-full max-w-7xl mx-auto px-6 py-14 grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-8">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -49,10 +57,16 @@ export default function HomePage() {
             <DayView
               tasks={currentDay?.tasks || []}
               journal={currentDay?.journal || ""}
+              dayRating={currentDay?.dayRating || 0}
+              improvementNotes={currentDay?.improvementNotes || ""}
               onAddTask={handleAddTask}
               onUpdateTask={(task) => updateTask(formattedDate, task)}
               onDeleteTask={(id) => deleteTask(formattedDate, id)}
               onJournalChange={(journal) => updateJournal(formattedDate, journal)}
+              onRatingChange={(rating) => updateDayRating(formattedDate, rating)}
+              onImprovementNotesChange={(notes) =>
+                updateImprovementNotes(formattedDate, notes)
+              }
             />
           </motion.div>
         </div>

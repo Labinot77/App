@@ -13,7 +13,7 @@ export function useTasks() {
     if (!days[date]) {
       setDays({
         ...days,
-        [date]: { date, tasks: [], journal: "" },
+        [date]: { date, tasks: [], journal: "", dayRating: 0, improvementNotes: "" },
       })
     }
   }
@@ -59,5 +59,29 @@ export function useTasks() {
     }))
   }
 
-  return { days, addTask, updateTask, deleteTask, updateJournal }
+  function updateDayRating(date: string, rating: number) {
+    createDay(date)
+    setDays((prev) => ({
+      ...prev,
+      [date]: { ...prev[date], dayRating: rating },
+    }))
+  }
+
+  function updateImprovementNotes(date: string, notes: string) {
+    createDay(date)
+    setDays((prev) => ({
+      ...prev,
+      [date]: { ...prev[date], improvementNotes: notes },
+    }))
+  }
+
+  return {
+    days,
+    addTask,
+    updateTask,
+    deleteTask,
+    updateJournal,
+    updateDayRating,
+    updateImprovementNotes,
+  }
 }
