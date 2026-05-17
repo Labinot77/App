@@ -1,29 +1,12 @@
 export const TEMPLATE = `
-• What I did well:
-• Mistakes / what to avoid:
-• Key lesson from today's session:
+What did I work on most?
+Did I move closer to my goals today? How?
 
-── MINDSET & ENERGY ──────────────────────
+Did I do what I said I would do today, if not where did I break the discipline:
+How focused were during the day:
+What was the biggest distraction today?
 
-• Energy level (1–10):
-• Stress level (1–10):
-• Focus level (1–10):
+What mistakes did you do today, what caused them, what can you do different next time: 
 
-• What affected my mindset today?
-
-── WINS & GRATITUDE ──────────────────────
-
-• 3 wins today (big or small):
-  1.
-  2.
-  3.
-
-• I'm grateful for:
-
-For tommorow: 
-• Top priority tomorrow:
-
-• One thing I'll do differently:
-
-• Intention for tomorrow:
+Key lesson from today's session:
 `

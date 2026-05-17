@@ -57,7 +57,6 @@ export function TaskCard({ task, onUpdate, onDelete }: Props) {
             </AnimatePresence>
           </motion.button>
 
-          {/* Content */}
           <div className="flex-1 min-w-0">
             <p
               className={cn(
@@ -74,7 +73,6 @@ export function TaskCard({ task, onUpdate, onDelete }: Props) {
             )}
           </div>
 
-          {/* Action buttons — appear on hover */}
           <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
             <button
               onClick={() => setShowReflection((s) => !s)}

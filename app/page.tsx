@@ -17,7 +17,6 @@ export default function HomePage() {
     deleteTask,
     updateJournal,
     updateDayRating,
-    updateImprovementNotes,
   } = useTasks()
 
   const formattedDate = formatDate(selectedDate)
@@ -32,6 +31,7 @@ export default function HomePage() {
       reflection: "",
       createdAt: new Date().toISOString(),
     }
+    
     addTask(formattedDate, task)
   }
 

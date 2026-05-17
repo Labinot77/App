@@ -1,7 +1,7 @@
 "use client"
 
 import { Calendar } from "@/components/ui/calendar"
-import { CheckCircle2 } from "lucide-react"
+import { formatDate } from "@/lib/date"
 import { DayData } from "@/lib/types"
 
 type Props = {
@@ -17,7 +17,7 @@ export function CalendarView({ selected, onSelect, days }: Props) {
   }
 
   const isDateCompleted = (date: Date) => {
-    const dateStr = date.toISOString().split("T")[0]
+    const dateStr = formatDate(date)
     return isAllTasksCompleted(days[dateStr])
   }
 
@@ -40,13 +40,9 @@ export function CalendarView({ selected, onSelect, days }: Props) {
       <Calendar
         mode="single"
         selected={selected}
-        onSelect={(date) => {
-          if (date) onSelect(date)
-        }}
+        onSelect={(date) => { if (date) onSelect(date)}}
         className="rounded-md w-full [&_.rdp-day_button]:relative"
-        modifiers={{
-          completed: (date) => isDateCompleted(date),
-        }}
+        modifiers={{ completed: (date) => isDateCompleted(date) }}
         modifiersClassNames={{
           completed: "after:absolute after:bottom-0.5 after:right-0.5 after:w-2.5 after:h-2.5 after:bg-green-500 after:rounded-full after:flex after:items-center after:justify-center",
         }}
