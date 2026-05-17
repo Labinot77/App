@@ -17,6 +17,7 @@ export default function HomePage() {
     deleteTask,
     updateJournal,
     updateDayRating,
+    updateImprovementNotes,
   } = useTasks()
 
   const formattedDate = formatDate(selectedDate)
@@ -44,7 +45,11 @@ export default function HomePage() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.45, ease: "easeOut", delay: 0.1 }}
           >
-            <CalendarView selected={selectedDate} onSelect={setSelectedDate} />
+            <CalendarView
+              selected={selectedDate}
+              onSelect={setSelectedDate}
+              days={days}
+            />
           </motion.div>
 
           <motion.div

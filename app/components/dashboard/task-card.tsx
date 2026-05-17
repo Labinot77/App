@@ -31,9 +31,7 @@ export function TaskCard({ task, onUpdate, onDelete }: Props) {
       )}
     >
       <div className="p-3.5">
-        {/* Top row */}
         <div className="flex items-start gap-2.5">
-          {/* Checkbox */}
           <motion.button
             whileTap={{ scale: 0.85 }}
             onClick={() => onUpdate({ ...task, completed: !task.completed })}

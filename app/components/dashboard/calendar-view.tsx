@@ -1,13 +1,26 @@
 "use client"
 
 import { Calendar } from "@/components/ui/calendar"
+import { CheckCircle2 } from "lucide-react"
+import { DayData } from "@/lib/types"
 
 type Props = {
   selected: Date
   onSelect: (date: Date) => void
+  days: Record<string, DayData>
 }
 
-export function CalendarView({ selected, onSelect }: Props) {
+export function CalendarView({ selected, onSelect, days }: Props) {
+  const isAllTasksCompleted = (dayData: DayData | undefined) => {
+    if (!dayData || dayData.tasks.length === 0) return false
+    return dayData.tasks.every((task) => task.completed)
+  }
+
+  const isDateCompleted = (date: Date) => {
+    const dateStr = date.toISOString().split("T")[0]
+    return isAllTasksCompleted(days[dateStr])
+  }
+
   return (
     <div
       className="rounded-2xl self-start sticky top-8 border border-border bg-card/40 backdrop-blur-sm p-5"
@@ -30,7 +43,13 @@ export function CalendarView({ selected, onSelect }: Props) {
         onSelect={(date) => {
           if (date) onSelect(date)
         }}
-        className="rounded-md w-full"
+        className="rounded-md w-full [&_.rdp-day_button]:relative"
+        modifiers={{
+          completed: (date) => isDateCompleted(date),
+        }}
+        modifiersClassNames={{
+          completed: "after:absolute after:bottom-0.5 after:right-0.5 after:w-2.5 after:h-2.5 after:bg-green-500 after:rounded-full after:flex after:items-center after:justify-center",
+        }}
       />
     </div>
   )

@@ -37,7 +37,10 @@ export function DayView({
 
   function handleAdd() {
     if (!title.trim()) return;
+    
     onAddTask(title.trim(), description.trim());
+
+
     setTitle("");
     setDescription("");
   }
@@ -133,32 +136,19 @@ export function DayView({
           {/* Tasks */}
           <div className="flex-1 min-h-0 flex flex-col">
             <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3 shrink-0">
-              {tasks.length === 0
-                ? "No tasks yet"
-                : `Tasks · ${completed}/${tasks.length}`}
+                Tasks {tasks.length === 0 ? "" : `${completed}/${tasks.length}`}
             </p>
 
             <div className="flex-1 overflow-y-auto space-y-3 pr-1">
               <AnimatePresence initial={false}>
-                {tasks.length === 0 ? (
-                  <motion.div
-                    key="empty"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="rounded-2xl border-2 border-dashed border-border py-12 text-center text-sm text-muted-foreground"
-                  >
-                    Add your first task →
-                  </motion.div>
-                ) : (
-                  tasks.map((task) => (
+                  {tasks.map((task) => (
                     <TaskCard
                       key={task.id}
                       task={task}
                       onUpdate={onUpdateTask}
                       onDelete={() => onDeleteTask(task.id)}
                     />
-                  ))
+                  )
                 )}
               </AnimatePresence>
             </div>
