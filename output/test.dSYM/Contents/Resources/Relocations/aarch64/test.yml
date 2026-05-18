@@ -1,0 +1,5 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     '/Users/lab/Desktop/my-app/output/test'
+relocations:     []
+...

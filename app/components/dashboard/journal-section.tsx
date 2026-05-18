@@ -1,54 +1,32 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { motion } from "motion/react"
-import { Textarea } from "@/components/ui/textarea"
-import { TextFormatterToolbar } from "./text-formatter-toolbar"
-import { RenderFormattedText, parseFormattedText } from "./text-formatter-parser"
+import { useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import { Textarea } from "@/components/ui/textarea";
+import { ConfirmPopup } from "../shared/confirm-popup";
+import { TEMPLATE } from "@/app/constant/template";
+import { Button } from "@/components/ui/button";
+import { FileTextIcon } from "lucide-react";
 
 type Props = {
-  value: string
-  onChange: (value: string) => void
-}
+  value: string;
+  onChange: (value: string) => void;
+};
 
 export function JournalSection({ value, onChange }: Props) {
-  const [showPreview, setShowPreview] = useState(false)
-  const [selectedText, setSelectedText] = useState("")
+  const [showConfirm, setShowConfirm] = useState(false);
 
-  const textareaRef = React.useRef<HTMLTextAreaElement>(null)
-
-  function applyFormat(format: string, colorValue?: string) {
-    const textarea = textareaRef.current
-    if (!textarea) return
-
-    const start = textarea.selectionStart
-    const end = textarea.selectionEnd
-    const text = textarea.value
-    const selectedText = text.substring(start, end)
-
-    if (!selectedText) return
-
-    let formattedText = ""
-    if (format === "bold") {
-      formattedText = `**${selectedText}**`
-    } else if (format === "italic") {
-      formattedText = `*${selectedText}*`
-    } else if (format === "underline") {
-      formattedText = `__${selectedText}__`
-    } else if (format === "color" && colorValue) {
-      formattedText = `[${colorValue}]${selectedText}[/]`
+  function applyTemplate() {
+    if (value.trim()) {
+      setShowConfirm(true);
+    } else {
+      onChange(TEMPLATE);
     }
+  }
 
-    const newText =
-      text.substring(0, start) + formattedText + text.substring(end)
-    onChange(newText)
-
-    // Restore cursor position
-    setTimeout(() => {
-      textarea.focus()
-      const newCursorPos = start + formattedText.length
-      textarea.setSelectionRange(newCursorPos, newCursorPos)
-    }, 0)
+  function confirmApply() {
+    onChange(TEMPLATE);
+    setShowConfirm(false);
   }
 
   return (
@@ -58,45 +36,41 @@ export function JournalSection({ value, onChange }: Props) {
       transition={{ duration: 0.35, ease: "easeOut", delay: 0.35 }}
       className="flex flex-col flex-1 min-h-0 rounded-2xl bg-card border border-border shadow-sm p-4 gap-3"
     >
-      <div className="flex items-center justify-between">
-        <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-          Daily Journal
-        </p>
-        <button
-          onClick={() => setShowPreview(!showPreview)}
-          className="text-xs px-2 py-1 rounded bg-background/60 hover:bg-background/80 transition-colors text-muted-foreground hover:text-foreground"
-        >
-          {showPreview ? "Edit" : "Preview"}
-        </button>
+      <div className="flex items-start justify-between gap-2 shrink-0">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-0.5">
+            Daily Journal
+          </p>
+        </div>
+
+        <div className="relative">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={applyTemplate}
+            className="shrink-0 text-xs h-7 gap-1.5"
+          >
+            <FileTextIcon className="size-3"/>
+            Use template
+          </Button>
+
+          <ConfirmPopup
+            open={showConfirm}
+            title="Replace journal?"
+            description="This will replace your current journal entry. Continue?"
+            confirmText="Replace"
+            onConfirm={confirmApply}
+            onClose={() => setShowConfirm(false)}
+          />
+        </div>
       </div>
 
-      {!showPreview && (
-        <>
-          <TextFormatterToolbar onApplyFormat={applyFormat} />
-
-          <Textarea
-            ref={textareaRef}
-            className="flex-1 min-h-0 resize-none bg-background/60 leading-relaxed text-sm font-mono"
-            placeholder="What went well? What could be better? What are you grateful for?
-
-Use **bold** for important text
-Use *italic* for emphasis  
-Use __underline__ for highlights
-Use [#ff0000]colored text[/] for colors"
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-          />
-        </>
-      )}
-
-      {showPreview && (
-        <div className="flex-1 min-h-0 overflow-y-auto bg-background/60 rounded p-3 leading-relaxed text-sm prose prose-sm max-w-none">
-          <RenderFormattedText nodes={parseFormattedText(value)} />
-          {!value && (
-            <span className="text-muted-foreground">Nothing to preview yet...</span>
-          )}
-        </div>
-      )}
+      <Textarea
+        className="flex-1 min-h-0 resize-none bg-background/60 leading-relaxed text-sm font-mono"
+        placeholder="Reflect on your day here."
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      />
     </motion.div>
-  )
+  );
 }

@@ -97,7 +97,6 @@ export function TaskCard({ task, onUpdate, onDelete }: Props) {
           </div>
         </div>
 
-        {/* Reflection */}
         <AnimatePresence>
           {showReflection && (
             <motion.div
