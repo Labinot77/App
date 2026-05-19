@@ -77,9 +77,7 @@ export function DayView({
         </AnimatePresence>
       </motion.div>
 
-      {/* Two-column body */}
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6 min-h-0 flex-1">
-        {/* Left — add form + journal */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -114,26 +112,22 @@ export function DayView({
             </Button>
           </div>
 
-          {/* Journal */}
           <div className="flex-1 min-h-0 flex flex-col">
             <JournalSection value={journal} onChange={onJournalChange} />
           </div>
         </motion.div>
 
-        {/* Right — rating + tasks */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, ease: "easeOut", delay: 0.3 }}
           className="flex flex-col gap-5 min-h-0 overflow-y-auto"
         >
-          {/* Day Rating Section */}
           <DayRatingSection
             rating={dayRating}
             onRatingChange={onRatingChange}
           />
 
-          {/* Tasks */}
           <div className="flex-1 min-h-0 flex flex-col">
             <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3 shrink-0">
                 Tasks {tasks.length === 0 ? "" : `${completed}/${tasks.length}`}

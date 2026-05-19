@@ -111,7 +111,7 @@ export function TaskCard({ task, onUpdate, onDelete }: Props) {
                   placeholder="Add a reflection…"
                   value={task.reflection || ""}
                   onChange={(e) => onUpdate({ ...task, reflection: e.target.value })}
-                  className="min-h-[56px] resize-none bg-background/60 text-xs placeholder:text-muted-foreground"
+                  className="min-h-14 resize-none bg-background/60 text-xs placeholder:text-muted-foreground"
                 />
               </div>
             </motion.div>
