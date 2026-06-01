@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
+import { FlameIcon } from "lucide-react";
 
 type Props = {
   tasks: Task[];
@@ -20,6 +21,7 @@ type Props = {
   onDeleteTask: (id: string) => void;
   onJournalChange: (journal: string) => void;
   onRatingChange: (rating: number) => void;
+  streak: number;
 };
 
 export function DayView({
@@ -31,15 +33,15 @@ export function DayView({
   onDeleteTask,
   onJournalChange,
   onRatingChange,
+  streak,
 }: Props) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
   function handleAdd() {
     if (!title.trim()) return;
-    
-    onAddTask(title.trim(), description.trim());
 
+    onAddTask(title.trim(), description.trim());
 
     setTitle("");
     setDescription("");
@@ -55,26 +57,67 @@ export function DayView({
         transition={{ duration: 0.35, ease: "easeOut", delay: 0.2 }}
         className="pb-5 mb-6 shrink-0 border-b border-border"
       >
-        <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-1">
-          {new Date().toLocaleDateString("en-US", {
-            weekday: "long",
-            month: "long",
-            day: "numeric",
-          })}
-        </p>
-        <AnimatePresence>
-          {tasks.length > 0 && (
-            <motion.p
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              className="mt-1 text-sm text-muted-foreground"
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-1">
+              {new Date().toLocaleDateString("en-US", {
+                weekday: "long",
+                month: "long",
+                day: "numeric",
+              })}
+            </p>
+
+            <AnimatePresence>
+              {tasks.length > 0 && (
+                <motion.p
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="mt-1 text-sm text-muted-foreground"
+                >
+                  <span className="font-bold">Tasks:</span> {completed} of{" "}
+                  {tasks.length} done
+                </motion.p>
+              )}
+            </AnimatePresence>
+          </div>
+
+          <div
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold transition-colors ${
+              streak > 0
+                ? "bg-orange-500/15 text-orange-500 border border-orange-500/20"
+                : "bg-muted text-muted-foreground border border-border"
+            }`}
+          >
+            <motion.span
+              animate={streak > 0 ? { rotate: [0, -10, 10, -6, 6, 0] } : {}}
+              transition={{ duration: 0.5, delay: 0.2 }}
             >
-              <span className="font-bold">Tasks:</span> {completed} of{" "}
-              {tasks.length} done
-            </motion.p>
-          )}
-        </AnimatePresence>
+              <FlameIcon
+                className={`size-3.5 ${
+                  streak > 0
+                    ? "fill-orange-400 text-orange-500"
+                    : "text-muted-foreground"
+                }`}
+              />
+            </motion.span>
+
+            <AnimatePresence mode="wait">
+              <motion.span
+                key={streak}
+                initial={{ opacity: 0, y: 8, scale: 0.8 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -8, scale: 0.8 }}
+                transition={{ duration: 0.2 }}
+                className="inline-block tabular-nums"
+              >
+                {streak}
+              </motion.span>
+            </AnimatePresence>
+
+            <span>day streak</span>
+          </div>
+        </div>
       </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6 min-h-0 flex-1">
@@ -130,20 +173,19 @@ export function DayView({
 
           <div className="flex-1 min-h-0 flex flex-col">
             <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3 shrink-0">
-                Tasks {tasks.length === 0 ? "" : `${completed}/${tasks.length}`}
+              Tasks {tasks.length === 0 ? "" : `${completed}/${tasks.length}`}
             </p>
 
             <div className="flex-1 overflow-y-auto space-y-3 pr-1">
               <AnimatePresence initial={false}>
-                  {tasks.map((task) => (
-                    <TaskCard
-                      key={task.id}
-                      task={task}
-                      onUpdate={onUpdateTask}
-                      onDelete={() => onDeleteTask(task.id)}
-                    />
-                  )
-                )}
+                {tasks.map((task) => (
+                  <TaskCard
+                    key={task.id}
+                    task={task}
+                    onUpdate={onUpdateTask}
+                    onDelete={() => onDeleteTask(task.id)}
+                  />
+                ))}
               </AnimatePresence>
             </div>
           </div>

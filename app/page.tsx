@@ -7,6 +7,7 @@ import { DayView } from "./components/dashboard/day-view"
 import { useTasks } from "../lib/use-tasks"
 import { formatDate } from "@/lib/date"
 import { Task } from "@/lib/types"
+import { calcStreak } from "@/lib/streak"
 
 export default function HomePage() {
   const [selectedDate, setSelectedDate] = useState(new Date())
@@ -21,6 +22,7 @@ export default function HomePage() {
 
   const formattedDate = formatDate(selectedDate)
   const currentDay = days[formattedDate]
+  const streak = calcStreak(days)
 
   function handleAddTask(title: string, description: string) {
     const task: Task = {
@@ -37,7 +39,6 @@ export default function HomePage() {
 
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-background">
-     
       <div className="flex-1 overflow-hidden">
         <div className="h-full max-w-7xl mx-auto px-6 py-14 grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-8">
           <motion.div
@@ -67,6 +68,7 @@ export default function HomePage() {
               onDeleteTask={(id) => deleteTask(formattedDate, id)}
               onJournalChange={(journal) => updateJournal(formattedDate, journal)}
               onRatingChange={(rating) => updateDayRating(formattedDate, rating)}
+              streak={streak}
             />
           </motion.div>
         </div>
