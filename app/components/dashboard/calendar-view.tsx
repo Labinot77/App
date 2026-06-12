@@ -21,6 +21,10 @@ export function CalendarView({ selected, onSelect, days }: Props) {
     return isAllTasksCompleted(days[dateStr])
   }
 
+    const todayDate = new Date()
+    todayDate.setHours(0, 0, 0, 0)
+
+
   return (
     <div
       className="rounded-2xl self-start sticky top-8 border border-border bg-card/40 backdrop-blur-sm p-5"
@@ -44,6 +48,7 @@ export function CalendarView({ selected, onSelect, days }: Props) {
         className="rounded-md w-full [&_.rdp-day_button]:relative"
         modifiers={{ completed: (date) => isDateCompleted(date) }}
         modifiersClassNames={{
+          today: "after:absolute after:bottom-0.5 after:right-0.5 after:w-2.5 after:h-2.5 after:bg-yellow-500 after:rounded-full after:flex after:items-center after:justify-center",
           completed: "after:absolute after:bottom-0.5 after:right-0.5 after:w-2.5 after:h-2.5 after:bg-green-500 after:rounded-full after:flex after:items-center after:justify-center",
         }}
       />

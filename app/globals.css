@@ -249,3 +249,16 @@
     @apply font-sans;
   }
 }
+
+
+.day-today button {
+  position: relative;
+}
+.day-today button::before {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border: 1.5px solid white;
+  border-radius: 9999px;
+  pointer-events: none;
+}

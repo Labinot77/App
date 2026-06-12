@@ -75,6 +75,10 @@ export function useTasks() {
     }))
   }
 
+  function currentDay(date: string) {
+    
+  }
+
   return {
     days,
     addTask,
