@@ -176,7 +176,7 @@ export function DayView({
               Tasks {tasks.length === 0 ? "" : `${completed}/${tasks.length}`}
             </p>
 
-            <div className="flex-1 overflow-y-auto space-y-3 pr-1">
+            <div className="flex-1 overflow-y-hidden space-y-3 pr-1">
               <AnimatePresence initial={false}>
                 {tasks.map((task) => (
                   <TaskCard

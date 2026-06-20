@@ -8,6 +8,9 @@ import { useTasks } from "../lib/use-tasks"
 import { formatDate } from "@/lib/date"
 import { Task } from "@/lib/types"
 import { calcStreak } from "@/lib/streak"
+import { AuthStatus } from "./components/dashboard/auth-status"
+import { useUser } from "@/lib/use-user"
+import { useRouter } from "next/navigation"
 
 export default function HomePage() {
   const [selectedDate, setSelectedDate] = useState(new Date())
@@ -19,10 +22,18 @@ export default function HomePage() {
     updateJournal,
     updateDayRating,
   } = useTasks()
+  const {isLoggedIn } = useUser()
+  const router = useRouter()
+  
+  if (!isLoggedIn) {
+      router.push("/login")
+      return
+  }
 
   const formattedDate = formatDate(selectedDate)
   const currentDay = days[formattedDate]
   const streak = calcStreak(days)
+  
 
   function handleAddTask(title: string, description: string) {
     const task: Task = {
@@ -46,6 +57,7 @@ export default function HomePage() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.45, ease: "easeOut", delay: 0.1 }}
           >
+            <AuthStatus/>
             <CalendarView
               selected={selectedDate}
               onSelect={setSelectedDate}
@@ -59,6 +71,7 @@ export default function HomePage() {
             transition={{ duration: 0.45, ease: "easeOut", delay: 0.15 }}
             className="min-h-0"
           >
+
             <DayView
               tasks={currentDay?.tasks || []}
               journal={currentDay?.journal || ""}

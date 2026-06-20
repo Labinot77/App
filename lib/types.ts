@@ -12,5 +12,4 @@ export type DayData = {
   tasks: Task[]
   journal: string
   dayRating?: number
-  improvementNotes?: string
 }
