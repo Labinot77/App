@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { motion } from "motion/react"
 import { CalendarView } from "./components/dashboard/calendar-view"
 import { DayView } from "./components/dashboard/day-view"
@@ -22,17 +22,14 @@ export default function HomePage() {
     updateJournal,
     updateDayRating,
   } = useTasks()
-  const {isLoggedIn } = useUser()
+  const { isLoggedIn, loading } = useUser()
   const router = useRouter()
   
-  if (!isLoggedIn) {
-      router.push("/login")
-      return
-  }
-
+  
   const formattedDate = formatDate(selectedDate)
   const currentDay = days[formattedDate]
   const streak = calcStreak(days)
+  
   
 
   function handleAddTask(title: string, description: string) {
@@ -47,6 +44,13 @@ export default function HomePage() {
     
     addTask(formattedDate, task)
   }
+
+  useEffect(() => {
+    if (!loading && !isLoggedIn) {
+      router.push("/login")
+    }
+  }, [loading, isLoggedIn, router])
+
 
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-background">
